@@ -4,7 +4,10 @@
 
 ## Introduction
 
-**Frog World** is a video game I created.
+**Frog World** is a video game I created. <a href="https://play.google.com/store/apps/details?id=com.gothicserpent.frogworld">
+<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Kitten"
+	title="Play Store Link" width="25%" height="25%" align="middle"/>
+</a>
 
 ## Issues
 
