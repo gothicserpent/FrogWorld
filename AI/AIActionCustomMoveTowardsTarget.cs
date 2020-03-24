@@ -14,7 +14,7 @@ public class AIActionCustomMoveTowardsTarget : AIActionMoveTowardsTarget
 protected Animator m_Animator;
 public float MovementMagnitude = 1.0f;
 
-protected override void Initialization()
+public override void Initialization()
 {
 	base.Initialization();
 	m_Animator = gameObject.GetComponent<Animator>();

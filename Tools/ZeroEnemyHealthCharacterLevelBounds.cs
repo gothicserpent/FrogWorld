@@ -25,14 +25,14 @@ protected override void ApplyBoundsBehavior(BoundsBehavior behavior, Vector2 con
 	{
 		if (_character.CharacterType == Character.CharacterTypes.Player)
 		{
-			LevelManager.Instance.KillPlayer (_character);
+			LevelManager.Instance.PlayerDead (_character);
 		}
 		else
 		{
 			Health health = _character.gameObject.MMGetComponentNoAlloc<Health>();
 			if (health != null)
 			{
-				health.Damage(health.CurrentHealth, health.gameObject, 0.0f, 0.0f);
+				health.Damage(health.CurrentHealth, health.gameObject, 0.0f, 0.0f, Vector3.zero);
 				health.Kill();
 				//public virtual void Damage(int damage,GameObject instigator, float flickerDuration, float invincibilityDuration)
 			}

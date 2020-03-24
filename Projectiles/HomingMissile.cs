@@ -2,25 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MoreMountains.CorgiEngine;
-using System.Linq;
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 
 /// <summary>
 /// Homes into enemies. Need to disable Projectile and Health scripts.
-// TODO: Do not track dead enemies.
-// TODO: Sometimes, the bullets don't track properly
-// TODO: Range is not working properly.
+// TODO: bullets fire inward on themselves sometimes if there are no ememies
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class HomingMissile : MonoBehaviour
 {
 private Transform enemytarget; //target of current enemy
 private Rigidbody2D rb; //the dynamic object to move
-private float MinValue=0.0f; //distance of closest enemy
-private int MinIndex=0; //index array of closest enemy
-private GameObject[] enemygameobjects; //array of enemy game objects
-public float maxDistanceAway = 30f; // max distance of homing lock on
+public float maxDistanceAway = 100f; // max distance of homing lock on
 public float speed = 5f; //speed of missile
 public float rotateSpeed = 200f; //speed of rotation
 public MMFeedbacks DeathFeedbacks; //fx to spawn when object dies
@@ -29,8 +23,15 @@ public LayerMask TargetLayerMask; //layer mask for collisions - i.e. walls / ene
 void Start()
 {
 	rb = GetComponent<Rigidbody2D>();
-	FindClosestEnemy();
+	InvokeRepeating("FindClosestEnemy", 0.0f, 0.1f); //slightly more efficient
 }
+
+/*
+   void Update()
+   {
+        FindClosestEnemy();
+   }
+ */
 
 void OnTriggerEnter2D(Collider2D collider)
 {
@@ -54,7 +55,29 @@ void OnTriggerEnter2D(Collider2D collider)
 
 void FixedUpdate()
 {
-	if (MinValue == 0.0f || !enemygameobjects[MinIndex].activeSelf) return;  // return if all dead or none exist
+	//if (MinValue == 0.0f || !enemygameobjects[MinIndex].activeSelf) return;  // return if all dead or none exist
+	if (enemytarget==null)
+	{
+		//make a fake enemy target at the mouse position
+		//new Vector2(this.transform.position.x+10.0f, this.transform.position.y);
+		Vector2 fakedirection = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - rb.position;
+		fakedirection.Normalize();
+		float fakerotateAmount = Vector3.Cross(fakedirection, transform.right).z;
+
+		rb.angularVelocity = -fakerotateAmount * rotateSpeed;
+
+		//Debug.Log("x: " + transform.right.x + ", y: " + transform.right.y + ", z: " + transform.right.z); //original transform.right
+
+		Vector3 screenPos = GameObject.Find("FrogCamera").GetComponent<Camera>().WorldToScreenPoint(this.transform.position); //screen position calculation of this object
+
+		//Debug.Log("screenpos this x: " + screenPos.x + ", screen this y: " + screenPos.y + ", screen this z: " + screenPos.z);
+		//Debug.Log("mouse x: " + Input.mousePosition.x + ",mouse y: " + Input.mousePosition.y + ",mouse z: " + Input.mousePosition.z);
+
+		//rb.velocity = transform.right * speed; //old calculation
+		rb.velocity = Vector3.Normalize(Input.mousePosition - screenPos) * speed;
+		//rb.velocity = Vector3.Dot(rb.velocity, rb.forward); //another experimental calculation
+		return;
+	}
 	Vector2 direction = (Vector2)enemytarget.position - rb.position;
 	direction.Normalize();
 	float rotateAmount = Vector3.Cross(direction, transform.right).z;
@@ -62,49 +85,31 @@ void FixedUpdate()
 	rb.velocity = transform.right * speed;
 }
 
-/// <summary>
-/// Find the closest enemy to target
-/// </summary>
-void FindClosestEnemy()
+private void FindClosestEnemy()
 {
-	enemygameobjects = GameObject.FindGameObjectsWithTag("Enemy");
+	float distanceToClosestEnemy = Mathf.Infinity;
+	GameObject closestEnemy = null;
+	GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-	Debug.Log("Enemy game objects:" + enemygameobjects.Length);
-
-	if (enemygameobjects.Length == 0) return; // return if there are no enemies
-
-	//Debug.Log(enemygameobjects.Length + " enemies.");
-
-	float[] enemydistances = new float[enemygameobjects.Length];
-
-	for (int i = 0; i < enemygameobjects.Length; i++)         // find the closest target
+	foreach (GameObject currentEnemy in allEnemies)
 	{
-		if (Debug.isDebugBuild) Debug.Log("Enemy " + i + " Health: " + enemygameobjects[i].GetComponent<Health>().CurrentHealth);
-		if (enemygameobjects[i].GetComponent<Health>() == null)
+		float distanceToEnemy = (currentEnemy.transform.position - this.transform.position).sqrMagnitude;
+		if (distanceToEnemy < distanceToClosestEnemy)
 		{
-			//Debug.Log("Null health.");
-			enemydistances[i]=0.0f;
-		}
-		if(enemygameobjects[i].GetComponent<Health>().CurrentHealth <= 0)
-		{
-			enemydistances[i]=0.0f;         // set enemy distance to be ludicrously high if dead
-		}
-		else
-		{
-			float dist = Vector3.Distance(this.transform.position, enemygameobjects[i].transform.position);
-			if(dist <= maxDistanceAway) enemydistances[i]=dist; // set enemy distance for each index
-			else enemydistances[i]=0.0f;
+			distanceToClosestEnemy = distanceToEnemy;
+			closestEnemy = currentEnemy;
 		}
 	}
 
-	MinValue = enemydistances.Min();
-	MinIndex = enemydistances.ToList().IndexOf(MinValue);
+	if (closestEnemy == null) //if no enemies found
+	{
+		enemytarget = null;
+		return;
+	}
+	//Debug.Log("Closest enemy distance: " + (closestEnemy.transform.position - this.transform.position).sqrMagnitude);
+	if ((closestEnemy.transform.position - this.transform.position).sqrMagnitude <= maxDistanceAway) enemytarget = closestEnemy.transform; //only set the enemy target if the maxDistanceAway condition is met
+	else enemytarget = null;
 
-	if (MinValue == 0.0f || !enemygameobjects[MinIndex].activeSelf) return; // return if all dead or none exist
-
-
-	Debug.Log("Closest enemy transform:" + enemygameobjects[MinIndex].transform.position + " Distance away: " + MinValue);
-
-	enemytarget = enemygameobjects[MinIndex].transform;
 }
+
 }

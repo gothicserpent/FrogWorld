@@ -1,3 +1,5 @@
+//A GameObject with this component will move towards its target and get destroyed when it reaches it. Here you can define what object to instantiate on impact. Use the Initialize method to set its destination and speed.
+
 using UnityEngine;
 using System.Collections;
 using MoreMountains.Tools;
@@ -9,7 +11,6 @@ namespace MoreMountains.CorgiEngine
 /// </summary>
 public class PathedProjectilePlayerTarget : MonoBehaviour
 {
-[Information("A GameObject with this component will move towards its target and get destroyed when it reaches it. Here you can define what object to instantiate on impact. Use the Initialize method to set its destination and speed.",MoreMountains.Tools.InformationAttribute.InformationType.Info,false)]
 /// The effect to instantiate when the object gets destroyed
 public GameObject DestroyEffect;
 /// the destination of the projectile
