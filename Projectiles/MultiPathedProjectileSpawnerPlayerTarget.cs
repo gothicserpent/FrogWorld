@@ -1,3 +1,5 @@
+//A GameObject with this component will spawn projectiles at the specified fire rate.
+
 ﻿using UnityEngine;
 using System.Collections;
 using MoreMountains.Tools;
@@ -12,7 +14,6 @@ namespace MoreMountains.CorgiEngine
 public class MultiPathedProjectileSpawnerPlayerTarget : MonoBehaviour
 {
 [Header("Pathed Projectile Spawner")]
-[Information("A GameObject with this component will spawn projectiles at the specified fire rate.",MoreMountains.Tools.InformationAttribute.InformationType.Info,false)]
 /// the pathed projectile's destination
 protected Transform Destination;                 //this is set in the pathedprojectileplayertarget.cs file
 /// the projectiles to spawn
