@@ -18,7 +18,7 @@ protected Animator m_Animator;
 /// <summary>
 /// set the m_Animator var
 /// </summary>
-protected override void Initialization()
+public override void Initialization()
 {
 	base.Initialization();
 	m_Animator = gameObject.GetComponent<Animator>();

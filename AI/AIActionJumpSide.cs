@@ -15,7 +15,7 @@ public float triggerPeriod = 1.0f; // amount of time to wait before triggering f
 protected CorgiController _controller;
 protected Animator m_Animator;
 
-protected override void Initialization()
+public override void Initialization()
 {
 	base.Initialization();
 	_controller = this.gameObject.GetComponent<CorgiController>();

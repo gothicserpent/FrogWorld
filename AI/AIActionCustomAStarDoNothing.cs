@@ -19,7 +19,7 @@ public class AIActionCustomAStarDoNothing : AIActionAStarDoNothing
 
 protected Animator m_Animator;
 
-protected override void Initialization()
+public override void Initialization()
 {
 	base.Initialization();
 	m_Animator = gameObject.GetComponent<Animator>();

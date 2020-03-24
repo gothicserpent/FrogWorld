@@ -27,7 +27,7 @@ protected bool IsFacingRight;
 /// <summary>
 /// On init we grab our CharacterHandleWeapon ability
 /// </summary>
-protected override void Initialization()
+public override void Initialization()
 {
 	_character = GetComponent<Character>();
 	_characterHandleWeapon = this.gameObject.GetComponent<CharacterHandleWeapon>();

@@ -95,13 +95,13 @@ protected override void GetCurrentAim()
 			return;
 		}
 
-					#if UNITY_ANDROID || UNITY_IPHONE
-		int Arrows = 170;   // bottom left arrow area
-		int XYBATopY = 180;   // bottom right XYBA area Y
-		int XYBALeftX = (int)Screen.width - 180;   // bottom right XYBA area X
-		int PauseY = (int)Screen.height - 125;   // top left pause area y
-		int PauseX = 125;   // top left pause area x
-		int InvX = (int)Screen.width - 150;                                 // Top right inventory area X
+		#if UNITY_ANDROID || UNITY_IPHONE
+		int Arrows = 300; // bottom left arrow area (previous 170)
+		int XYBATopY = 300; // bottom right XYBA area Y (previous 180)
+		int XYBALeftX = (int)Screen.width - 300; // bottom right XYBA area X (previous 180)
+		int PauseY = (int)Screen.height - 200; // top left pause area y (previous 125)
+		int PauseX = 200; // top left pause area x (previous 125)
+		int InvX = (int)Screen.width - 200; // Top right inventory area X (previous 150)
 		for(int i = 0; i < Input.touchCount; i++)
 		{
 			if (Input.GetTouch(i).position.x>Arrows && Input.GetTouch(i).position.x<XYBALeftX && Input.GetTouch(i).position.y<XYBATopY)

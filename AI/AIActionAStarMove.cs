@@ -26,7 +26,7 @@ IAstarAI ai;
 /// <summary>
 /// On init we grab our CharacterMovement ability
 /// </summary>
-protected override void Initialization()
+public override void Initialization()
 {
 	ai = GetComponent<IAstarAI>();
 }
